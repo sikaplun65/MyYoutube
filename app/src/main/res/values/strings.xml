@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">MyYoutube</string>
+    <string name="app_name">Youtube</string>
+    <string name="todo">TODO</string>
+    <string name="button_search">Search</string>
+    <string name="delete_description">X</string>
+    <string name="button">Button</string>
+
+<!--    Categories-->
+    <string name="all">Все</string>
+    <string name="my_channels">Мои каналы</string>
+    <string name="wildlife">Дикая природа</string>
+    <string name="football">Футбол</string>
+    <string name="music">Музыка</string>
+    <string name="favorites">Избраное</string>
 </resources>
