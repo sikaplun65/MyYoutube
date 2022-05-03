@@ -11,6 +11,12 @@ class CategoryAdapter : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>
 
     private val categories = mutableListOf<Category>()
 
+    private var onItemClickCallbackCategoryAdapter: OnItemClickCallbackCategoryAdapter? = null
+
+    fun setOnItemClickCallbackCategoryAdapter(onItemClickCallback: OnItemClickCallbackCategoryAdapter){
+        onItemClickCallbackCategoryAdapter = onItemClickCallback
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     fun setCategoryAdapter(data: List<Category>){
         categories.clear()
@@ -33,9 +39,17 @@ class CategoryAdapter : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>
         RecyclerView.ViewHolder(binding.root) {
           fun bind(data: Category){
               binding.apply {
+                  root.setOnClickListener{
+                      onItemClickCallbackCategoryAdapter?.onItemClickedCategoryAdapter(data = data)
+                  }
                   categoryButton.text = data.category
               }
           }
 
+    }
+
+
+    interface OnItemClickCallbackCategoryAdapter{
+        fun onItemClickedCategoryAdapter(data: Category)
     }
 }

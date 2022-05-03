@@ -3,23 +3,24 @@ package com.sikaplun.kotlin.myyoutube.ui.main
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sikaplun.kotlin.myyoutube.data.models.Category
+import com.sikaplun.kotlin.myyoutube.data.models.CategoryList
+import com.sikaplun.kotlin.myyoutube.data.models.Items
 import com.sikaplun.kotlin.myyoutube.databinding.ActivityMainBinding
-import com.sikaplun.kotlin.myyoutube.ui.MainActivityAdapter
 import com.sikaplun.kotlin.myyoutube.ui.adapter.CategoryAdapter
+import com.sikaplun.kotlin.myyoutube.ui.adapter.MainActivityAdapter
 import com.sikaplun.kotlin.myyoutube.ui.detail.SearchDialogFragment
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val videoAdapter by lazy { MainActivityAdapter() }
     private val categoryAdapter by lazy { CategoryAdapter() }
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,19 +28,39 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initListVideoRecyclerView()
-        initCategoryRecyclerView()
-        searchVideo()
+        initCategoriesRecyclerView()
+        initOnClickMainViewAdapter()
+        initOnClickCategoryAdapter()
         initSearchButton()
         showFoundVideos()
     }
 
+    private fun initOnClickCategoryAdapter() {
+        categoryAdapter.setOnItemClickCallbackCategoryAdapter(object :
+            CategoryAdapter.OnItemClickCallbackCategoryAdapter {
+            override fun onItemClickedCategoryAdapter(data: Category) {
+                Toast.makeText(this@MainActivity, "В разработке", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    private fun initOnClickMainViewAdapter() {
+        videoAdapter.setOnItemClickCallbackMainActivityAdapter(object :
+            MainActivityAdapter.OnItemClickCallbackMainActivityAdapter {
+            override fun onItemClicked(data: Items) {
+                Toast.makeText(this@MainActivity, "В разработке", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
     private fun initSearchButton() {
-        binding.searchImageButton.setOnClickListener{
+        binding.searchImageButton.setOnClickListener {
             val searchDialogFragment = SearchDialogFragment.newInstance()
             searchDialogFragment.setOnSearchClickListener(object :
                 SearchDialogFragment.OnSearchClickListener {
-                override fun onClick(videoTitle: String) {
-                    Toast.makeText(this@MainActivity,"В разработке",Toast.LENGTH_LONG).show()
+                override fun onClick(searchVideo: String) {
+                    viewModel.setSearchVideo(searchVideo)
+                    showLoading(true)
                 }
             })
             searchDialogFragment.show(supportFragmentManager, BOTTOM_SHEET_FRAGMENT_DIALOG_TAG)
@@ -56,13 +77,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchVideo() {
-        viewModel.setSearchVideo()
-        showLoading(true)
-
-
-    }
-
     private fun initListVideoRecyclerView() {
         binding.apply {
             videoRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
@@ -71,9 +85,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initCategoryRecyclerView() {
-        val categoryList: List<Category> = getCategories()
-        categoryAdapter.setCategoryAdapter(categoryList)
+    private fun initCategoriesRecyclerView() {
+        val categoryList = CategoryList(this)
+        categoryAdapter.setCategoryAdapter(categoryList.getCategories())
 
         binding.apply {
             categoryRecyclerView.layoutManager =
@@ -89,18 +103,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             binding.progressBar.visibility = View.GONE
         }
-    }
-
-    private fun getCategories(): List<Category> {
-        val categories = ArrayList<Category>()
-        categories.add(Category("Все"))
-        categories.add(Category("Мои каналы"))
-        categories.add(Category("Футбол"))
-        categories.add(Category("Дикая природа"))
-        categories.add(Category("Музыка"))
-        categories.add(Category("Избраное"))
-
-        return categories
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package com.sikaplun.kotlin.myyoutube.ui
+package com.sikaplun.kotlin.myyoutube.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -12,6 +12,12 @@ import com.sikaplun.kotlin.myyoutube.databinding.VideoItemBinding
 class MainActivityAdapter : RecyclerView.Adapter<MainActivityAdapter.MainActivityViewHolder>() {
 
     private val listVideos = mutableListOf<Items>()
+
+    private var onItemClickCallbackMainActivityAdapter: OnItemClickCallbackMainActivityAdapter? = null
+
+    fun setOnItemClickCallbackMainActivityAdapter(onItemClickCallbackMainActivityAdapter: OnItemClickCallbackMainActivityAdapter){
+        this.onItemClickCallbackMainActivityAdapter = onItemClickCallbackMainActivityAdapter
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setListVideos(data: List<Items>) {
@@ -37,6 +43,11 @@ class MainActivityAdapter : RecyclerView.Adapter<MainActivityAdapter.MainActivit
 
         fun bind(data: Items) {
             binding.apply {
+
+                root.setOnClickListener{
+                    onItemClickCallbackMainActivityAdapter?.onItemClicked(data)
+                }
+
                 Glide.with(itemView)
                     .load(data.snippet.thumbnails.high.url)
                     .transition(DrawableTransitionOptions.withCrossFade())
@@ -46,6 +57,10 @@ class MainActivityAdapter : RecyclerView.Adapter<MainActivityAdapter.MainActivit
                 textView.text = data.snippet.title
             }
         }
+    }
+
+    interface OnItemClickCallbackMainActivityAdapter{
+        fun onItemClicked(data:Items)
     }
 
 }

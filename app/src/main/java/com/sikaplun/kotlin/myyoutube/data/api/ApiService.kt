@@ -12,8 +12,11 @@ interface ApiService {
         @Query("key")
         key: String,
 
-        @Query("channelId")
-        channelId: String,
+        @Query("q")
+        query: String,
+
+//        @Query("channelId")
+//        channelId: String,
 
         @Query("part")
         part: String,
